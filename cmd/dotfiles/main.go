@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -137,6 +138,11 @@ func NewRunner(args []string, env Env, stdin io.Reader, stdout, stderr io.Writer
 
 // Run is the main thread but separated out so easier to test
 func (r Runner) Run() error {
+	flags := flag.NewFlagSet(r.args[0], flag.ExitOnError)
+	err := flags.Parse(r.args[1:])
+	if err != nil {
+		return err
+	}
 	logger := log.New(r.stderr, "", log.LstdFlags|log.Lshortfile)
 	var repoArg string
 	if len(r.args) > 1 {
