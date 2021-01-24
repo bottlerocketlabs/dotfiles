@@ -1,0 +1,52 @@
+# Make sure to check the documentation at http://goreleaser.com
+before:
+  hooks:
+  - go mod tidy
+builds:
+- id: dotfiles
+  binary: dotfiles
+  env:
+  - CGO_ENABLED=0
+  main: ./cmd/dotfiles/main.go
+  goos:
+  - darwin
+  - linux
+  goarch:
+  - amd64
+archives:
+- replacements:
+    darwin: Darwin
+    linux: Linux
+    amd64: x86_64
+  files:
+  - README.md
+  - LICENSE
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - Merge pull request
+    - Merge branch
+    - go mod tidy
+brews:
+- name: dotfiles
+  tap:
+    owner: stuart-warren
+    name: homebrew-apps
+    token: "{{ .Env.HOMEBREW_GITHUB_TOKEN }}"
+  folder: Formula
+  homepage:  https://github.com/stuart-warren/dotfiles
+  description: A tool help setup your dotfiles
+  license: MIT
+  test: |
+    system "#{bin}/dotfiles -help"
+  dependencies:
+  - name: go
+  install: |-
+    bin.install "dotfiles"
