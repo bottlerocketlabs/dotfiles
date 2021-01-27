@@ -5,8 +5,8 @@ import "testing"
 func TestParseArg(t *testing.T) {
 	tt := map[string][]string{
 		"":                                {"", "", "", ""},
-		"stuart-warren":                   {"", "", "stuart-warren", ""},
-		"stuart-warren/.dotfiles":         {"", "", "stuart-warren", ".dotfiles"},
+		"bottlerocketlabs":                {"", "", "bottlerocketlabs", ""},
+		"bottlerocketlabs/.dotfiles":      {"", "", "bottlerocketlabs", ".dotfiles"},
 		"bob":                             {"", "", "bob", ""},
 		"https://gitlab.com/bob/dotfiles": {"https", "gitlab.com", "bob", "dotfiles"},
 	}
@@ -30,9 +30,9 @@ func TestParseArg(t *testing.T) {
 
 func TestBuildRepo(t *testing.T) {
 	tt := map[string]string{
-		"":                                "https://github.com/stuart-warren/dotfiles",
-		"stuart-warren":                   "https://github.com/stuart-warren/dotfiles",
-		"stuart-warren/.dotfiles":         "https://github.com/stuart-warren/.dotfiles",
+		"":                                "https://github.com/bottlerocketlabs/dotfiles",
+		"bottlerocketlabs":                "https://github.com/bottlerocketlabs/dotfiles",
+		"bottlerocketlabs/.dotfiles":      "https://github.com/bottlerocketlabs/.dotfiles",
 		"bob":                             "https://github.com/bob/dotfiles",
 		"https://gitlab.com/bob/dotfiles": "https://gitlab.com/bob/dotfiles",
 	}
