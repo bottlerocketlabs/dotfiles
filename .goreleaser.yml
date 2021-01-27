@@ -37,11 +37,11 @@ changelog:
 brews:
 - name: dotfiles
   tap:
-    owner: stuart-warren
+    owner: bottlerocketlabs
     name: homebrew-apps
     token: "{{ .Env.HOMEBREW_GITHUB_TOKEN }}"
   folder: Formula
-  homepage:  https://github.com/stuart-warren/dotfiles
+  homepage:  https://github.com/bottlerocketlabs/dotfiles
   description: A tool help setup your dotfiles
   license: MIT
   test: |

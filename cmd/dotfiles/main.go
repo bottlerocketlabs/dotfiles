@@ -47,7 +47,7 @@ func parseRepo(arg string) (scheme, host, org, name string) {
 func buildRepo(arg string) url.URL {
 	scheme := "https"
 	repoHost := "github.com"
-	repoOrg := "stuart-warren"
+	repoOrg := "bottlerocketlabs"
 	repoName := "dotfiles"
 	s, h, o, n := parseRepo(arg)
 	if s != "" {

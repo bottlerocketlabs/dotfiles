@@ -1,4 +1,4 @@
-module github.com/stuart-warren/dotfiles
+module github.com/bottlerocketlabs/dotfiles
 
 go 1.15
 
