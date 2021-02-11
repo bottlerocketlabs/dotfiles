@@ -128,12 +128,13 @@ type Runner struct {
 	stdin    io.Reader
 	stdout   io.Writer
 	stderr   io.Writer
+	logger   *log.Logger
 	readFile func(path string) ([]byte, error)
 }
 
 // NewRunner creates a Runner
 func NewRunner(args []string, env Env, stdin io.Reader, stdout, stderr io.Writer) Runner {
-	return Runner{args: args, env: env, stdin: stdin, stdout: stdout, stderr: stderr, readFile: ioutil.ReadFile}
+	return Runner{args: args, env: env, stdin: stdin, stdout: stdout, stderr: stderr, logger: log.New(stderr, "", log.LstdFlags|log.Lshortfile), readFile: ioutil.ReadFile}
 }
 
 // Run is the main thread but separated out so easier to test
@@ -143,13 +144,16 @@ func (r Runner) Run() error {
 	if err != nil {
 		return err
 	}
-	logger := log.New(r.stderr, "", log.LstdFlags|log.Lshortfile)
 	var repoArg string
 	if len(r.args) > 1 {
 		repoArg = r.args[1]
 	}
+	err = r.AptPrerequisites()
+	if err != nil {
+		return err
+	}
 	u := buildRepo(repoArg)
-	logger.Printf("have url: %s", u.String())
+	r.logger.Printf("have url: %s", u.String())
 	dotfilesEnv := r.env.Get("DOTFILES_DIR")
 	dotfilesDir, err := homedir.Expand(dotfilesEnv)
 	if err != nil && dotfilesEnv != "" {
@@ -162,7 +166,7 @@ func (r Runner) Run() error {
 	if dotfilesDir == "" {
 		dotfilesDir = path.Join(homeDir, ".dotfiles")
 	}
-	logger.Printf("have dir: %s", dotfilesDir)
+	r.logger.Printf("have dir: %s", dotfilesDir)
 	repo, err := CloneOrOpenGitRepo(dotfilesDir, u, r.stderr)
 	if err != nil {
 		return fmt.Errorf("failed to get git repo: %w", err)
@@ -177,16 +181,11 @@ func (r Runner) Run() error {
 	}
 	err = r.handleDotfilesConfigFile(dotfilesDir)
 	if err != nil {
-		logger.Printf("could not find /dotfiles.yaml in the repository")
-		logger.Printf("trying standard install scripts instead")
+		r.logger.Printf("could not find /dotfiles.yaml in the repository")
+		r.logger.Printf("trying standard install scripts instead")
 		return r.handleInstallScript(dotfilesDir)
 	}
 	return nil
-}
-
-// Config is structure of configuration file dotfiles.yaml
-type Config struct {
-	// TODO
 }
 
 func (r Runner) handleDotfilesConfigFile(dotfilesDir string) error {
@@ -204,6 +203,19 @@ func (r Runner) handleDotfilesConfigFile(dotfilesDir string) error {
 	if err != nil {
 		return fmt.Errorf("could not parse config file: %w", err)
 	}
+	err = r.processDotfilesConfigFile(cfg)
+	if err != nil {
+		return fmt.Errorf("failed during processing of config file: %w", err)
+	}
+	return nil
+}
+
+func (r *Runner) processDotfilesConfigFile(cfg Config) error {
+	err := r.Apt(cfg)
+	if err != nil {
+		return err
+	}
+	r.logger.Printf("done")
 	return nil
 }
 

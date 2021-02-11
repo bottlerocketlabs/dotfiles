@@ -1,0 +1,7 @@
+apt_repositories:
+- key_url: https://bottlerocketlabs.jfrog.io/artifactory/api/gpg/key/public
+  repositories:
+  - "deb https://bottlerocketlabs.jfrog.io/artifactory/deb all main"
+apt_packages:
+- docker.io
+- rpbcopy
