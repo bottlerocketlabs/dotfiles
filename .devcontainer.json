@@ -1,0 +1,16 @@
+{
+	"name": "localpod",
+	"image": "docker.io/bottlerocketlabs/localpod-base:latest",
+	"containerEnv": {
+		"DOTFILES_REPO": "stuart-warren"
+	},
+	"remoteEnv": {},
+	"containerUser": "root",
+	"remoteUser": "dev",
+	"mounts": [],
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached",
+	"workspaceFolder": "/workspace",
+	"runArgs": [],
+	"overrideCommand": true,
+	"shutdownAction": "stopContainer"
+}
