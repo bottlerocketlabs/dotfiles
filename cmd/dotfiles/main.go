@@ -144,7 +144,7 @@ func (r Runner) Run() error {
 		return err
 	}
 	logger := log.New(r.stderr, "", log.LstdFlags|log.Lshortfile)
-	var repoArg string
+	repoArg := r.env.Get("DOTFILES_REPO")
 	if len(r.args) > 1 {
 		repoArg = r.args[1]
 	}
